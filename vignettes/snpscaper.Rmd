@@ -1,0 +1,215 @@
+---
+title: "Getting started with snpscaper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with snpscaper}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 96
+)
+```
+
+snpscaper lets you explore how human genetic variation is distributed
+within and between populations around the world, using real genome data
+from the 1000 Genomes Project. You choose a gene or a region of the genome;
+snpscaper fetches the data and helps you analyse and plot it, all inside R.
+
+This vignette introduces the key ideas and the basic workflow. Other
+vignettes cover [population structure](population-structure.html) (PCA,
+admixture and Fst), [diversity and selection](diversity-and-selection.html)
+(heterozygosity, allele frequencies and linkage disequilibrium), and
+[making reports](reports.html).
+
+## Key ideas
+
+### Genomes, SNPs and genotypes
+
+The human genome is about 3 billion DNA letters long, spread over 22 pairs
+of autosomes plus the sex chromosomes. Any two people's genomes are about
+99.9% identical. Most of the differences are **SNPs** (single nucleotide
+polymorphisms): positions where some people carry one letter, say `G`, and
+others carry another, say `A`. The two versions are called **alleles**.
+
+Because we inherit one copy of each autosome from each parent, everyone
+carries two alleles at every SNP. At a SNP with alleles `G` and `A`, a
+person can be `GG`, `GA` or `AA`. snpscaper records this **genotype** as
+the number of copies of one of the alleles (the "alternative" allele, here
+`A`): 0, 1 or 2.
+
+### Reference and alternative alleles
+
+Every SNP has a **reference** allele, the letter found in the human
+reference genome, and an **alternative** allele. The reference genome was
+assembled mostly from a few individuals, so the reference allele is simply
+a convention: it is not necessarily the ancestral allele, nor the more
+common one. Always check which allele a frequency refers to.
+
+### Genome positions and GRCh38
+
+Positions in the genome are given as a chromosome and a number of DNA
+letters from its start, for example `chr2:135,851,076`. These coordinates
+depend on the version of the reference genome. snpscaper uses the current
+version, **GRCh38** (also called hg38), as do Ensembl and the UCSC Genome
+Browser by default.
+
+### The 1000 Genomes Project
+
+The [1000 Genomes Project](https://www.internationalgenome.org) sequenced
+the genomes of people from 26 populations, grouped into five continental
+**super-populations**. snpscaper uses the 2,504 unrelated people from the
+project, whose genomes were later re-sequenced at high coverage by the New
+York Genome Center.
+
+```{r}
+library(snpscaper)
+
+table(samples_1kg$super_pop)
+head(samples_1kg)
+```
+
+| Code | Super-population | Populations |
+|---|---|---|
+| AFR | African | ACB, ASW, ESN, GWD, LWK, MSL, YRI |
+| AMR | Admixed American | CLM, MXL, PEL, PUR |
+| EAS | East Asian | CDX, CHB, CHS, JPT, KHV |
+| EUR | European | CEU, FIN, GBR, IBS, TSI |
+| SAS | South Asian | BEB, GIH, ITU, PJL, STU |
+
+A few things are worth knowing about these populations. "Admixed American"
+populations have recent ancestry from several continents (Indigenous
+American, European and African). ASW (African Ancestry in Southwest US)
+and ACB (African Caribbean in Barbados) also have mixed recent ancestry.
+Some populations were sampled away from their region of origin, for example
+CEU (Utah residents with Northern and Western European ancestry) and GIH
+(Gujarati Indians in Houston).
+
+### VCF files
+
+Genotype data are usually stored in **VCF** (variant call format) files:
+large text files with one line per variant and one column per person. The
+1000 Genomes Project publishes one compressed VCF file per chromosome,
+each tens of gigabytes. snpscaper never downloads a whole file. Each file
+has a small **index** that records where each part of the chromosome is
+stored, so snpscaper reads only the part you ask for.
+
+## The basic workflow
+
+### 1. Fetch a region
+
+`fetch_region()` takes gene symbols or coordinates:
+
+```{r eval = FALSE}
+lct <- fetch_region("LCT")
+mc1r <- fetch_region("MC1R", flank = 10000) # 10 kb either side of the gene
+neutral <- fetch_region("chr18:1,000,000-1,300,000")
+```
+
+For genes, a flanking region (25 kb by default) is added on each side,
+because variants that control a gene's activity often lie just outside it.
+The main lactase persistence variant, for example, sits 14 kb upstream of
+the LCT gene.
+
+The first fetch needs an internet connection and takes from a few seconds
+to a minute. The data are then saved on your computer, so fetching the same
+region again is instant and works offline (see `?clear_cache`).
+
+This vignette uses `example_lct`, a copy of `fetch_region("LCT")` that comes
+with the package:
+
+```{r}
+lct <- example_lct
+lct
+```
+
+The result is a `snpscape` object. It holds the genotypes (a table with one
+row per person and one column per SNP), a description of each SNP, a
+description of each person, and a record of where the data came from and
+what has been done to them.
+
+```{r}
+lct$genotypes[1:5, 1:4]
+head(lct$variants)
+```
+
+### 2. Choose genes to explore
+
+The package includes a set of genes that make good teaching examples, with a
+short description of each and one or two key SNPs:
+
+```{r}
+teaching_genes[, c("gene", "chrom", "description")]
+teaching_snps[, c("gene", "rsid", "note")]
+```
+
+Any other gene can be fetched by its official symbol. Use `find_gene()` to
+check where it is, and `find_snp()` to look up an rs number.
+
+### 3. Filter SNPs
+
+Most SNPs in the genome are very rare, and most analyses work better on a
+cleaned-up set. `filter_snps()` removes rare SNPs and SNPs with many missing
+genotypes, and can also remove SNPs that are strongly correlated with their
+neighbours (LD pruning; see `?filter_snps` for why this matters).
+
+```{r}
+lct_common <- filter_snps(lct, min_maf = 0.01)
+lct_pruned <- filter_snps(lct, min_maf = 0.01, prune_ld = TRUE)
+lct_pruned
+```
+
+Of the 1,922 SNPs in the LCT region, only about one in five has a minor
+allele frequency of 1% or more, and LD pruning keeps only a small fraction
+of those. The LCT region has unusually strong LD because of recent
+selection, as the [diversity and selection](diversity-and-selection.html)
+vignette explains.
+
+### 4. Choose populations
+
+`keep_pops()` narrows the data to the populations you want to compare:
+
+```{r}
+lct_subset <- keep_pops(lct_common, pop = c("YRI", "GBR", "FIN", "CHB", "PJL"))
+summary(lct_subset)
+```
+
+`summary()` lists the people per population and every processing step.
+
+### 5. Analyse and plot
+
+From here, every analysis follows the same pattern: a `calc_*()` function
+calculates the numbers as a table, and a `plot_*()` function draws them. For
+example, the frequency of the lactase persistence allele in each
+population:
+
+```{r}
+freqs <- calc_allele_freqs(lct)
+freqs[freqs$rsid %in% "rs4988235", c("pop", "super_pop", "ref", "alt", "alt_freq")]
+```
+
+```{r fig.height = 4}
+plot_freqs(freqs, snp = "rs4988235")
+```
+
+The persistence allele (`A` on the genome's forward strand; it is usually
+described as `T`, because LCT is read from the opposite strand) is common in
+Northern Europe, present at lower frequencies in South Asia and in admixed
+populations, and absent from the East Asian samples.
+
+All plots are ordinary ggplot2 objects, so you can change them in the usual
+way, for example by adding `+ ggplot2::labs(title = "My title")`.
+
+## Where next
+
+* [Population structure](population-structure.html): PCA, admixture and
+  Fst.
+* [Diversity and selection](diversity-and-selection.html): heterozygosity,
+  allele frequencies on maps, and linkage disequilibrium.
+* [Making reports](reports.html): ready-made HTML handouts for any region.

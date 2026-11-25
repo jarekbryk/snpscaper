@@ -1,0 +1,55 @@
+Package: snpscaper
+Type: Package
+Title: Explore Human Genetic Variation with 1000 Genomes Project Data
+Version: 0.1.0.9000
+Authors@R: c(
+    person("Jarek", "Bryk", email = "j.bryk@hud.ac.uk", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2791-9709"))
+  )
+Description: A teaching package for exploring variation in human populations
+    entirely within R. It fetches genotypes for any genomic region directly
+    from the 1000 Genomes Project (GRCh38, high-coverage phased panel),
+    prepares them for analysis, and supports principal component analysis,
+    admixture analysis, allele frequencies, Fst, heterozygosity and linkage
+    disequilibrium, with ready-made plots and an HTML handout report.
+License: MIT + file LICENSE
+URL: https://github.com/jarekbryk/snpscaper, https://jarekbryk.github.io/snpscaper/
+BugReports: https://github.com/jarekbryk/snpscaper/issues
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 4.1)
+Imports:
+    BiocGenerics,
+    cli,
+    dplyr,
+    GenomicRanges,
+    ggplot2,
+    httr2,
+    IRanges,
+    LEA,
+    maps,
+    purrr,
+    quarto,
+    rlang,
+    Rsamtools,
+    stats,
+    SummarizedExperiment,
+    tibble,
+    tidyr,
+    tools,
+    utils,
+    VariantAnnotation
+Suggests:
+    FactoMineR,
+    factoextra,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr
+biocViews:
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1
+Config/Needs/website: pkgdown

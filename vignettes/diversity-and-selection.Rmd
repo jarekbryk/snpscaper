@@ -1,0 +1,205 @@
+---
+title: "Diversity and selection: heterozygosity, allele frequencies and LD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Diversity and selection: heterozygosity, allele frequencies and LD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 96
+)
+```
+
+Two forces shape the genetic variation we see in human populations.
+**Population history** (migrations, bottlenecks, growth and mixing) affects
+the whole genome. **Natural selection** affects particular genes, where a
+variant that helped people survive or reproduce in a particular
+environment rose in frequency. This vignette shows how to see both, by
+comparing a region with no gene under strong selection (`example_neutral`,
+on chromosome 18) with the lactase gene (`example_lct`).
+
+```{r}
+library(snpscaper)
+```
+
+## Genetic diversity
+
+### Heterozygosity
+
+A person is **heterozygous** at a SNP if they carry two different alleles.
+The more genetic diversity a population has, the more heterozygous people
+it has. `calc_heterozygosity()` measures this in two ways: the observed
+proportion of heterozygous genotypes, and the proportion expected from the
+population's allele frequencies (see `?calc_heterozygosity`).
+
+```{r}
+neutral <- filter_snps(example_neutral, min_maf = 0.01)
+het <- calc_heterozygosity(neutral)
+het[order(-het$expected), ]
+```
+
+```{r}
+plot_heterozygosity(het, title = "Diversity in a neutral region of chromosome 18")
+```
+
+African populations have the highest diversity. This is one of the most
+consistent findings in human genetics, and is explained by the **serial
+founder effect**: modern humans originated in Africa, and each time a small
+group moved on to settle a new region, it carried only part of the
+diversity of the group it came from. Diversity therefore tends to decrease
+with distance from Africa.
+
+### Selection reduces diversity
+
+Now compare the lactase gene:
+
+```{r}
+lct_het <- calc_heterozygosity(filter_snps(example_lct, min_maf = 0.01))
+lct_het[order(-lct_het$expected), ]
+```
+
+```{r}
+plot_heterozygosity(lct_het, title = "Diversity in the LCT region")
+```
+
+In the LCT region, European populations, especially CEU and GBR, have much
+lower diversity than in the neutral region, and the lowest of all 26
+populations. When the lactase persistence variant spread through Northern
+Europe, the stretch of chromosome around it spread too, replacing other
+versions of the region. Variation near a strongly selected variant is
+"swept away", so low local diversity in one population is one of the
+signatures geneticists use to find genes under selection.
+
+A small region holds few independent pieces of evidence, so it is also
+affected by chance and by the particular history of that stretch of DNA.
+This is why conclusions about population history are based on many
+regions across the genome, while unusual single regions point to
+selection.
+
+## Allele frequencies
+
+### One SNP, many populations
+
+`calc_allele_freqs()` calculates the frequency of every SNP's alternative
+allele in each population. `plot_freqs()` and `map_freqs()` show one SNP.
+
+```{r}
+lct_freqs <- calc_allele_freqs(example_lct)
+```
+
+```{r fig.height = 4}
+plot_freqs(lct_freqs, snp = "rs4988235")
+```
+
+```{r fig.height = 4.5}
+map_freqs(lct_freqs, snp = "rs4988235")
+```
+
+rs4988235 is the main lactase persistence variant in Europeans. Most
+mammals stop producing lactase, the enzyme that digests milk sugar, after
+weaning. People who carry this variant keep producing it as adults. The
+variant lies about 14 kb upstream of the LCT gene, inside the neighbouring
+MCM6 gene, where it acts as an enhancer: a switch that controls LCT
+activity. It is common in Northern Europe and rare in East Asia. Lactase
+persistence evolved independently in parts of Africa and the Middle East,
+through different variants that are rare in the 1000 Genomes populations.
+
+On the map, some populations are drawn at their region of ancestral
+origin, not where they were sampled. See `?pop_locations`.
+
+### Other genes to try
+
+The `teaching_genes` table lists genes with striking patterns, and
+`teaching_snps` their key variants:
+
+```{r}
+teaching_snps[, c("gene", "rsid", "note")]
+```
+
+For example:
+
+```{r eval = FALSE}
+fetch_region("SLC24A5") |>
+  calc_allele_freqs() |>
+  map_freqs(snp = "rs1426654")
+
+fetch_region("ACKR1") |>
+  calc_allele_freqs() |>
+  map_freqs(snp = "rs2814778")
+```
+
+### Finding the most differentiated SNPs
+
+For a region without a known key variant, you can look for the SNPs whose
+frequencies differ most between populations, using dplyr:
+
+```{r}
+calc_allele_freqs(neutral, by = "super_pop") |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(difference = max(alt_freq) - min(alt_freq)) |>
+  dplyr::arrange(dplyr::desc(difference)) |>
+  head()
+```
+
+## Linkage disequilibrium
+
+### What LD is
+
+Chromosomes are passed down in long pieces, broken up only occasionally by
+recombination. SNPs close together therefore tend to be inherited together:
+knowing someone's allele at one SNP tells you something about their allele
+at a nearby SNP. This is **linkage disequilibrium** (LD), measured here as
+r², from 0 (no association) to 1 (complete association).
+
+`calc_ld()` calculates r² between pairs of SNPs, and `plot_ld()` draws a
+heatmap. Rare SNPs give unreliable r² values, so we keep SNPs with a minor
+allele frequency of at least 5% within the population we look at, and we do
+not prune for LD (that would remove exactly the pattern we want to see).
+
+### LD reveals selection
+
+When a favourable variant spreads quickly through a population, it carries
+the surrounding stretch of DNA with it, before recombination has had time
+to break it up. This **selective sweep** leaves an unusually long block of
+high LD around the selected variant. Compare LD around LCT in Europeans,
+where lactase persistence spread rapidly over the last few thousand years,
+with LD in Africans:
+
+```{r fig.width = 5.5, fig.height = 5}
+example_lct |>
+  keep_pops(super_pop = "EUR") |>
+  filter_snps(min_maf = 0.05) |>
+  calc_ld() |>
+  plot_ld(title = "LCT region, Europeans")
+```
+
+```{r fig.width = 5.5, fig.height = 5}
+example_lct |>
+  keep_pops(super_pop = "AFR") |>
+  filter_snps(min_maf = 0.05) |>
+  calc_ld() |>
+  plot_ld(title = "LCT region, Africans")
+```
+
+In Europeans, much of the region forms one large block of high LD (an
+average r² of about 0.45 across all pairs of SNPs). In Africans, LD is
+broken up into small patches (average r² about 0.1). Part of this
+difference is general: African populations have older and larger
+populations behind them, and so shorter LD everywhere in the genome. But
+comparing with the neutral region, where the average r² in Europeans is
+below 0.1, shows how unusual the LCT region is in Europeans:
+
+```{r fig.width = 5.5, fig.height = 5}
+example_neutral |>
+  keep_pops(super_pop = "EUR") |>
+  filter_snps(min_maf = 0.05) |>
+  calc_ld() |>
+  plot_ld(title = "Neutral region of chromosome 18, Europeans")
+```

@@ -1,0 +1,356 @@
+---
+date: today
+date-format: "D MMMM YYYY"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    css: report.css
+    fig-width: 8
+    fig-height: 5
+    fig-dpi: 110
+execute:
+  echo: false
+  warning: false
+  message: false
+params:
+  data: "data.rds"
+  focal_snps: ""
+  k: "2,3,4,5"
+  reps: 5
+  min_maf: 0.01
+  seed: 1
+  version: "staff"
+---
+
+```{r}
+#| label: setup
+library(snpscaper)
+
+x <- readRDS(params$data)
+# Lists are passed in as comma-separated text, e.g. "2,3,4,5".
+split_list <- function(text) strsplit(text, ",")[[1]]
+k <- as.integer(split_list(params$k))
+staff <- params$version == "staff"
+set.seed(params$seed)
+
+regions <- x$provenance$regions
+genes <- teaching_genes[teaching_genes$gene %in% regions$label, ]
+one_chromosome <- length(unique(x$variants$chrom)) == 1
+
+# Data for each part of the report (see ?render_report)
+common <- filter_snps(x, min_maf = params$min_maf)
+pruned <- filter_snps(x, min_maf = params$min_maf, prune_ld = TRUE)
+
+show_table <- function(df, ...) knitr::kable(df, format = "html", ...)
+```
+
+# The region
+
+```{r}
+#| label: tbl-regions
+#| tbl-cap: "Region(s) analysed (GRCh38 coordinates)."
+show_table(
+  data.frame(
+    Region = regions$label,
+    Chromosome = regions$chrom,
+    Start = format(regions$start, big.mark = ","),
+    End = format(regions$end, big.mark = ","),
+    `Length (kb)` = round((regions$end - regions$start + 1) / 1000, 1),
+    check.names = FALSE
+  )
+)
+```
+
+```{r}
+#| output: asis
+for (i in seq_len(nrow(genes))) {
+  cat("**", genes$gene[i], "**: ", genes$description[i], "\n\n", sep = "")
+}
+```
+
+The data come from the 1000 Genomes Project, which sequenced the genomes of
+people from 26 populations, grouped into five continental super-populations:
+African (AFR), Admixed American (AMR), East Asian (EAS), European (EUR) and
+South Asian (SAS).
+
+# The data
+
+```{r}
+#| label: tbl-people
+#| tbl-cap: "Number of people from each population included in this report."
+people <- x$samples |>
+  dplyr::count(super_pop, pop, pop_name, name = "People") |>
+  dplyr::rename(`Super-population` = super_pop, Population = pop, `Population name` = pop_name)
+show_table(people)
+```
+
+Each SNP (single nucleotide polymorphism) is a position in the genome where
+people carry different DNA letters (alleles). Only SNPs with exactly two
+alleles are used. @tbl-steps shows how many SNPs remain after each
+filtering step.
+
+```{r}
+#| label: tbl-steps
+#| tbl-cap: "Number of SNPs after each processing step. MAF: minor allele frequency. LD pruning removes SNPs strongly correlated with a neighbour."
+steps <- pruned$provenance$steps |>
+  dplyr::rename(Step = step, People = people, SNPs = snps)
+show_table(steps)
+```
+
+# Principal component analysis (PCA)
+
+PCA summarises the differences between people's genotypes in a few
+dimensions (principal components). People with similar genotypes appear
+close together. The analysis uses `r ncol(pruned$genotypes)` LD-pruned SNPs.
+
+```{r}
+#| label: pca
+pca_table <- suppressMessages(as_pca_table(pruned))
+pca <- FactoMineR::PCA(pca_table, quali.sup = 1:3, graph = FALSE, ncp = 5)
+
+plot_pca <- function(axes, colour_by, palette) {
+  factoextra::fviz_pca_ind(
+    pca,
+    axes = axes,
+    habillage = colour_by,
+    palette = unname(palette[levels(pca_table[[colour_by]])]),
+    geom = "point",
+    pointshape = 19,
+    pointsize = 1.2,
+    alpha.ind = 0.7,
+    mean.point = FALSE
+  ) +
+    ggplot2::labs(title = NULL) +
+    theme_jb()
+}
+```
+
+```{r}
+#| label: fig-pca-superpop
+#| fig-cap: "PCA: first and second principal components, coloured by super-population. Percentages give the share of variation captured by each component."
+plot_pca(c(1, 2), "super_pop", superpop_colours)
+```
+
+```{r}
+#| label: fig-pca-pop
+#| fig-cap: "PCA: first and second principal components, coloured by population."
+plot_pca(c(1, 2), "pop", pop_colours)
+```
+
+```{r}
+#| label: fig-pca-13
+#| fig-cap: "PCA: first and third principal components, coloured by super-population."
+plot_pca(c(1, 3), "super_pop", superpop_colours)
+```
+
+```{r}
+#| label: fig-scree
+#| fig-cap: "Share of the variation captured by each of the first ten principal components."
+#| fig-height: 3.5
+factoextra::fviz_eig(pca, ncp = 10, addlabels = TRUE, barfill = "grey60", barcolor = "grey60") +
+  ggplot2::labs(title = NULL) +
+  theme_jb()
+```
+
+# Admixture analysis
+
+Admixture analysis estimates, for each person, what proportion of their
+genome comes from each of *K* ancestral groups. The groups are statistical
+constructs, not real historical populations. *K* was varied from
+`r min(k)` to `r max(k)`, with `r params$reps` runs for each *K*; the best
+run is shown.
+
+```{r}
+#| label: admixture
+adm <- run_admixture(pruned, k = k, reps = params$reps, seed = params$seed, verbose = FALSE)
+best_k <- adm$cross_entropy$k[which.min(adm$cross_entropy$cross_entropy)]
+```
+
+```{r}
+#| label: fig-cross-entropy
+#| fig-cap: "Cross-entropy for each K (grey: each run; black: best run). Lower values mean the model predicts left-out genotypes better."
+#| fig-height: 3.5
+plot_cross_entropy(adm)
+```
+
+```{r}
+#| label: fig-admixture
+#| fig-cap: "Estimated ancestry proportions for each person (thin vertical bars), grouped by super-population, for each K."
+#| fig-height: !expr 1.4 + 1.3 * length(strsplit(params$k, ",")[[1]])
+plot_admixture(adm, k = k, group = "super_pop")
+```
+
+```{r}
+#| label: fig-admixture-pop
+#| fig-cap: !expr paste0("Estimated ancestry proportions grouped by population, for K = ", best_k, " (the K with the lowest cross-entropy).")
+#| fig-height: 3.5
+plot_admixture(adm, k = best_k, group = "pop")
+```
+
+# Genetic differentiation (Fst)
+
+Fst measures how much of the genetic variation lies between populations
+rather than within them: 0 means identical allele frequencies, 1 means no
+shared alleles. Calculated from `r ncol(common$genotypes)` SNPs.
+
+```{r}
+#| label: fig-fst
+#| fig-cap: "Pairwise Fst between populations."
+#| fig-height: 7
+plot_fst(calc_fst(common, by = "pop"), title = NULL)
+```
+
+```{r}
+#| label: tbl-fst
+#| tbl-cap: "Pairwise Fst between super-populations."
+fst_super <- calc_fst(common, by = "super_pop")
+if (nrow(fst_super) > 0) {
+  show_table(
+    dplyr::rename(fst_super, `Super-population 1` = group1, `Super-population 2` = group2, Fst = fst),
+    digits = 3
+  )
+}
+```
+
+# Genetic diversity (heterozygosity)
+
+Heterozygosity is the proportion of SNP genotypes at which a person carries
+two different alleles. Expected heterozygosity is the value expected from
+the population's allele frequencies if alleles paired at random.
+
+```{r}
+#| label: fig-het
+#| fig-cap: "Expected (bars) and observed (points) heterozygosity in each population."
+het <- calc_heterozygosity(common)
+plot_heterozygosity(het, title = NULL)
+```
+
+```{r}
+#| label: tbl-het
+#| tbl-cap: "Heterozygosity in each population."
+show_table(
+  dplyr::rename(het, Population = pop, `Super-population` = super_pop, People = people, SNPs = snps, Observed = observed, Expected = expected),
+  digits = 3
+)
+```
+
+# Allele frequencies of key SNPs
+
+```{r}
+#| label: choose-snps
+freqs <- calc_allele_freqs(x)
+focal <- split_list(params$focal_snps)
+focal_reason <- "chosen for this report"
+
+if (length(focal) == 0) {
+  focal <- teaching_snps$rsid[teaching_snps$gene %in% genes$gene]
+  focal_reason <- "well-studied SNPs in this gene (see Notes for staff)"
+}
+if (length(focal) == 0) {
+  # Otherwise, the SNP whose frequency differs most between super-populations
+  spread <- calc_allele_freqs(common, by = "super_pop") |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(range = max(alt_freq) - min(alt_freq)) |>
+    dplyr::arrange(dplyr::desc(range))
+  focal <- spread$id[1]
+  focal_reason <- "the SNP whose allele frequency differs most between super-populations"
+}
+focal <- focal[focal %in% c(freqs$id, freqs$rsid)]
+```
+
+SNPs shown here: `r if (length(focal) > 0) paste(focal, collapse = ", ") else "none found in these data"`
+(`r focal_reason`). Allele names follow the reference genome: the
+*reference* allele is the one in the human reference sequence, which is not
+necessarily the ancestral or most common one.
+
+```{r}
+#| output: asis
+for (i in seq_along(focal)) {
+  chunk <- c(
+    paste0("```{r}"),
+    paste0("#| label: fig-freq-", i),
+    paste0("#| fig-cap: 'Frequency of the alternative allele of ", focal[i], " in each population.'"),
+    paste0("plot_freqs(freqs, '", focal[i], "')"),
+    "```",
+    "",
+    paste0("```{r}"),
+    paste0("#| label: fig-map-", i),
+    paste0("#| fig-cap: 'Frequency of the alternative allele of ", focal[i], " on a world map.'"),
+    "#| fig-height: 5.5",
+    paste0("map_freqs(freqs, '", focal[i], "')"),
+    "```",
+    ""
+  )
+  cat(knitr::knit_child(text = chunk, envir = environment(), quiet = TRUE), sep = "\n")
+}
+```
+
+# Linkage disequilibrium (LD)
+
+Nearby SNPs tend to be inherited together. LD (measured as r²) shows how
+strongly the genotypes at each pair of SNPs are correlated: from 0 (none) to
+1 (complete). Each heatmap shows one super-population, using SNPs with a
+minor allele frequency of at least 5% in that super-population.
+
+```{r}
+#| output: asis
+if (!one_chromosome) {
+  cat("LD heatmaps are only drawn for reports on a single chromosome.\n")
+} else {
+  for (group in intersect(names(superpop_colours), x$samples$super_pop)) {
+    chunk <- c(
+      "```{r}",
+      paste0("#| label: fig-ld-", group),
+      paste0("#| fig-cap: 'Linkage disequilibrium in the ", group, " super-population.'"),
+      "#| fig-width: 6",
+      "#| fig-height: 5.5",
+      paste0("ld_data <- x |> keep_pops(super_pop = '", group, "') |> filter_snps(min_maf = 0.05)"),
+      "if (ncol(ld_data$genotypes) >= 2) plot_ld(suppressMessages(calc_ld(ld_data, max_snps = 200)), title = NULL)",
+      "```",
+      ""
+    )
+    cat(knitr::knit_child(text = chunk, envir = environment(), quiet = TRUE), sep = "\n")
+  }
+}
+```
+
+# Methods
+
+Genotypes were obtained from the 1000 Genomes Project high-coverage phased
+panel (GRCh38; Byrska-Bishop et al. 2022, *Cell* 185: 3426-3440), for the
+`r format(nrow(x$samples), big.mark = ",")` people included, and fetched on
+`r format(x$provenance$fetched, "%d %B %Y")`. Only biallelic SNPs were used.
+SNPs with a minor allele frequency below `r params$min_maf` were removed. For
+PCA and admixture analysis, SNPs were additionally pruned for linkage
+disequilibrium (r² ≤ 0.2 within sliding windows of 50 SNPs).
+
+PCA was performed with FactoMineR (Lê et al. 2008, *Journal of Statistical
+Software* 25: 1-18) on scaled genotypes. Admixture analysis used the sNMF
+algorithm of the LEA package (Frichot et al. 2014, *Genetics* 196: 973-983),
+with `r params$reps` runs per *K* and random seed `r params$seed`. Fst was
+estimated with Hudson's estimator combined across SNPs as a ratio of
+averages (Bhatia et al. 2013, *Genome Research* 23: 1514-1521).
+
+Report produced with snpscaper `r x$provenance$package_version`
+(<https://github.com/jarekbryk/snpscaper>).
+
+```{r}
+#| output: asis
+if (staff) {
+  cat("# Notes for staff {.staff-notes}\n\n")
+  if (nrow(genes) == 0) {
+    cat("No curated notes are available for this region. Regions with no gene under strong selection usually show genome-wide patterns: the highest diversity in African populations, and Fst values that reflect continental groupings.\n")
+  }
+  for (i in seq_len(nrow(genes))) {
+    cat("**", genes$gene[i], "**: ", genes$staff_notes[i], "\n\n", sep = "")
+    snps <- teaching_snps[teaching_snps$gene == genes$gene[i], ]
+    for (j in seq_len(nrow(snps))) {
+      cat("- ", snps$rsid[j], ": ", snps$note[j], "\n", sep = "")
+    }
+    cat("\n")
+  }
+}
+```

@@ -1,0 +1,31 @@
+/* Styles for snpscaper reports */
+
+body {
+  max-width: 900px;
+}
+
+table {
+  font-size: 0.9em;
+}
+
+.staff-notes {
+  border-left: 4px solid #0072B2;
+  padding-left: 0.8em;
+}
+
+/* When printed: no table of contents, keep figures and tables whole,
+   start the main sections on new pages. */
+@media print {
+  #TOC, #quarto-margin-sidebar, nav {
+    display: none !important;
+  }
+  figure, table, .quarto-figure {
+    page-break-inside: avoid;
+  }
+  h1 {
+    page-break-before: always;
+  }
+  h1.title {
+    page-break-before: avoid;
+  }
+}

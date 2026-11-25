@@ -1,0 +1,98 @@
+url: https://jarekbryk.github.io/snpscaper/
+template:
+  bootstrap: 5
+  bootswatch: simplex
+  bslib:
+    pkgdown-nav-height: 60px
+
+home:
+  title: snpscaper
+  description: >
+    Explore human genetic variation with 1000 Genomes Project data,
+    entirely within R. A teaching package.
+
+authors:
+  - name: "Jarek Bryk"
+    orcid: "0000-0002-2791-9709"
+    href: "https://github.com/jarekbryk"
+
+navbar:
+  structure:
+    left: [intro, articles, reference]
+    right: [github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "Population structure: PCA, admixture and Fst"
+          href: articles/population-structure.html
+        - text: "Diversity and selection"
+          href: articles/diversity-and-selection.html
+        - text: "Making reports and preparing classes"
+          href: articles/reports.html
+    github:
+      icon: fab fa-github
+      aria-label: GitHub
+      href: https://github.com/jarekbryk/snpscaper
+
+reference:
+  - title: Fetching data
+    contents:
+      - fetch_region
+      - find_gene
+      - find_snp
+      - clear_cache
+      - snpscape
+      - summary.snpscape
+  - title: Preparing data
+    contents:
+      - filter_snps
+      - keep_pops
+      - as_pca_table
+  - title: Admixture
+    contents:
+      - run_admixture
+      - get_ancestry
+      - plot_admixture
+      - plot_cross_entropy
+  - title: Allele frequencies, diversity and LD
+    contents:
+      - calc_allele_freqs
+      - plot_freqs
+      - map_freqs
+      - calc_fst
+      - plot_fst
+      - calc_heterozygosity
+      - plot_heterozygosity
+      - calc_ld
+      - plot_ld
+  - title: Reports
+    contents:
+      - render_report
+  - title: Plot styling
+    contents:
+      - theme_jb
+      - colours
+      - scale_colour_superpop
+  - title: Data
+    contents:
+      - samples_1kg
+      - pop_locations
+      - teaching_genes
+      - teaching_snps
+      - example_lct
+      - example_neutral
+  - title: internal
+    contents:
+      - snpscaper-package
+
+assets:
+  - man/figures
+
+footer:
+  structure:
+    left: [developed_by]
+    right: [built_with]
+  components:
+    developed_by: "Developed by Jarek Bryk"
+    built_with: "Built with [pkgdown](https://pkgdown.r-lib.org/)"
