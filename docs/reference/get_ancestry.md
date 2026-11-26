@@ -40,7 +40,7 @@ lct <- filter_snps(example_lct, min_maf = 0.05, prune_ld = TRUE)
 adm <- run_admixture(lct, k = 2:3, reps = 2)
 #> Running admixture for K = 2 and 3 (2 runs each, 12 SNPs)...
 get_ancestry(adm, k = 3, wide = TRUE)
-#> # A tibble: 2,504 x 7
+#> # A tibble: 2,504 × 7
 #>    sample_id pop   super_pop     k   group_1   group_2   group_3
 #>    <chr>     <chr> <chr>     <int>     <dbl>     <dbl>     <dbl>
 #>  1 HG01879   ACB   AFR           3 0.0001000 1.000     0.0001000
@@ -53,6 +53,6 @@ get_ancestry(adm, k = 3, wide = TRUE)
 #>  8 HG01890   ACB   AFR           3 0.0001000 1.000     0.0001000
 #>  9 HG01894   ACB   AFR           3 0.504     0.0001000 0.496    
 #> 10 HG01896   ACB   AFR           3 0.132     0.0001000 0.868    
-#> # i 2,494 more rows
+#> # ℹ 2,494 more rows
 # }
 ```

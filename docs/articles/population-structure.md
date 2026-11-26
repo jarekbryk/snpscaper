@@ -223,7 +223,7 @@ To work with the numbers yourself, use
 ``` r
 
 get_ancestry(adm, k = 3, wide = TRUE)
-#> # A tibble: 2,504 x 7
+#> # A tibble: 2,504 × 7
 #>    sample_id pop   super_pop     k   group_1   group_2   group_3
 #>    <chr>     <chr> <chr>     <int>     <dbl>     <dbl>     <dbl>
 #>  1 HG01879   ACB   AFR           3 0.402     0.0001000 0.597    
@@ -236,7 +236,7 @@ get_ancestry(adm, k = 3, wide = TRUE)
 #>  8 HG01890   ACB   AFR           3 0.709     0.123     0.168    
 #>  9 HG01894   ACB   AFR           3 0.443     0.557     0.0001000
 #> 10 HG01896   ACB   AFR           3 0.0001000 0.538     0.462    
-#> # i 2,494 more rows
+#> # ℹ 2,494 more rows
 ```
 
 ## Fst
@@ -255,7 +255,7 @@ Fst does not need LD pruning, so we use all common SNPs:
 
 neutral_common <- filter_snps(example_neutral, min_maf = 0.01)
 calc_fst(neutral_common, by = "super_pop")
-#> # A tibble: 10 x 3
+#> # A tibble: 10 × 3
 #>    group1 group2     fst
 #>    <chr>  <chr>    <dbl>
 #>  1 AFR    AMR    0.127  
@@ -294,7 +294,7 @@ Compare the LCT region with the neutral region:
 
 lct_common <- filter_snps(example_lct, min_maf = 0.01)
 calc_fst(lct_common, by = "super_pop")
-#> # A tibble: 10 x 3
+#> # A tibble: 10 × 3
 #>    group1 group2    fst
 #>    <chr>  <chr>   <dbl>
 #>  1 AFR    AMR    0.0880

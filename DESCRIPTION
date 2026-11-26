@@ -5,7 +5,7 @@ Version: 0.1.0.9000
 Authors@R: c(
     person("Jarek", "Bryk", email = "j.bryk@hud.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2791-9709")),
-    person("Alexander", "Marshall", email = "amarshall131299@gmail.com", role = c("aut", "cre"))
+    person("Alexander", "Marshall", email = "amarshall131299@gmail.com", role = "aut")
   )
 Description: A teaching package for exploring variation in human populations. 
     It fetches genotypes for any genomic region directly from the 1000 Genomes Project, 

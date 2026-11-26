@@ -55,7 +55,7 @@ identical; they mean "no detectable difference".
 example_lct |>
   filter_snps() |>
   calc_fst(by = "super_pop")
-#> # A tibble: 10 x 3
+#> # A tibble: 10 × 3
 #>    group1 group2    fst
 #>    <chr>  <chr>   <dbl>
 #>  1 AFR    AMR    0.0880

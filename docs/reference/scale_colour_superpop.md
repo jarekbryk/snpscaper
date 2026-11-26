@@ -35,7 +35,7 @@ A ggplot2 scale.
 
 ``` r
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.6.1
+#> Warning: package ‘ggplot2’ was built under R version 4.6.1
 df <- data.frame(super_pop = names(superpop_colours), n = c(661, 347, 504, 503, 489))
 ggplot(df, aes(super_pop, n, fill = super_pop)) +
   geom_col() +

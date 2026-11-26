@@ -32,7 +32,7 @@ frequencies (see
 neutral <- filter_snps(example_neutral, min_maf = 0.01)
 het <- calc_heterozygosity(neutral)
 het[order(-het$expected), ]
-#> # A tibble: 26 x 6
+#> # A tibble: 26 × 6
 #>    pop   super_pop people  snps observed expected
 #>    <chr> <chr>      <int> <int>    <dbl>    <dbl>
 #>  1 MSL   AFR           85  1409    0.223    0.228
@@ -45,7 +45,7 @@ het[order(-het$expected), ]
 #>  8 STU   SAS          102  1409    0.152    0.162
 #>  9 ITU   SAS          102  1409    0.156    0.159
 #> 10 BEB   SAS           86  1409    0.154    0.156
-#> # i 16 more rows
+#> # ℹ 16 more rows
 ```
 
 ``` r
@@ -70,7 +70,7 @@ Now compare the lactase gene:
 
 lct_het <- calc_heterozygosity(filter_snps(example_lct, min_maf = 0.01))
 lct_het[order(-lct_het$expected), ]
-#> # A tibble: 26 x 6
+#> # A tibble: 26 × 6
 #>    pop   super_pop people  snps observed expected
 #>    <chr> <chr>      <int> <int>    <dbl>    <dbl>
 #>  1 ACB   AFR           96   417    0.203    0.200
@@ -83,7 +83,7 @@ lct_het[order(-lct_het$expected), ]
 #>  8 CHS   EAS          105   417    0.201    0.187
 #>  9 CHB   EAS          103   417    0.180    0.187
 #> 10 CDX   EAS           93   417    0.195    0.178
-#> # i 16 more rows
+#> # ℹ 16 more rows
 ```
 
 ``` r
@@ -161,10 +161,10 @@ The `teaching_genes` table lists genes with striking patterns, and
 ``` r
 
 teaching_snps[, c("gene", "rsid", "note")]
-#> # A tibble: 9 x 3
+#> # A tibble: 9 × 3
 #>   gene    rsid      note                                                        
 #>   <chr>   <chr>     <chr>                                                       
-#> 1 LCT     rs4988235 European lactase persistence variant, known as -13910 C>T (~
+#> 1 LCT     rs4988235 European lactase persistence variant, known as -13910 C>T (…
 #> 2 MC1R    rs1805007 R151C, red hair variant                                     
 #> 3 MC1R    rs1805008 R160W, red hair variant                                     
 #> 4 SLC24A5 rs1426654 Ala111Thr, light skin pigmentation                          
@@ -200,7 +200,7 @@ calc_allele_freqs(neutral, by = "super_pop") |>
   dplyr::summarise(difference = max(alt_freq) - min(alt_freq)) |>
   dplyr::arrange(dplyr::desc(difference)) |>
   head()
-#> # A tibble: 6 x 2
+#> # A tibble: 6 × 2
 #>   id                difference
 #>   <chr>                  <dbl>
 #> 1 chr18:1080761:A:G      0.635

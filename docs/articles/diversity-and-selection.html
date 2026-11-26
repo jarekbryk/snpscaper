@@ -90,7 +90,7 @@ the proportion expected from the population’s allele frequencies (see
 <code class="sourceCode R"><span><span class="va">neutral</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_snps.html">filter_snps</a></span><span class="op">(</span><span class="va">example_neutral</span>, min_maf <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_heterozygosity.html">calc_heterozygosity</a></span><span class="op">(</span><span class="va">neutral</span><span class="op">)</span></span>
 <span><span class="va">het</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">het</span><span class="op">$</span><span class="va">expected</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 × 6</span></span></span>
 <span><span class="co">#&gt;    pop   super_pop people  snps observed expected</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MSL   AFR           85  <span style="text-decoration: underline;">1</span>409    0.223    0.228</span></span>
@@ -103,7 +103,7 @@ the proportion expected from the population’s allele frequencies (see
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> STU   SAS          102  <span style="text-decoration: underline;">1</span>409    0.152    0.162</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ITU   SAS          102  <span style="text-decoration: underline;">1</span>409    0.156    0.159</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BEB   SAS           86  <span style="text-decoration: underline;">1</span>409    0.154    0.156</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 16 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_heterozygosity.html">plot_heterozygosity</a></span><span class="op">(</span><span class="va">het</span>, title <span class="op">=</span> <span class="st">"Diversity in a neutral region of chromosome 18"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="diversity-and-selection_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
@@ -121,7 +121,7 @@ therefore tends to decrease with distance from Africa.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lct_het</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_heterozygosity.html">calc_heterozygosity</a></span><span class="op">(</span><span class="fu"><a href="../reference/filter_snps.html">filter_snps</a></span><span class="op">(</span><span class="va">example_lct</span>, min_maf <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lct_het</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">lct_het</span><span class="op">$</span><span class="va">expected</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 × 6</span></span></span>
 <span><span class="co">#&gt;    pop   super_pop people  snps observed expected</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ACB   AFR           96   417    0.203    0.200</span></span>
@@ -134,7 +134,7 @@ therefore tends to decrease with distance from Africa.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CHS   EAS          105   417    0.201    0.187</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CHB   EAS          103   417    0.180    0.187</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CDX   EAS           93   417    0.195    0.178</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 16 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_heterozygosity.html">plot_heterozygosity</a></span><span class="op">(</span><span class="va">lct_het</span>, title <span class="op">=</span> <span class="st">"Diversity in the LCT region"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="diversity-and-selection_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="672"></p>
@@ -190,10 +190,10 @@ origin, not where they were sampled. See
 patterns, and <code>teaching_snps</code> their key variants:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">teaching_snps</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="st">"rsid"</span>, <span class="st">"note"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 x 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 3</span></span></span>
 <span><span class="co">#&gt;   gene    rsid      note                                                        </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> LCT     rs4988235 European lactase persistence variant, known as -13910 C&gt;T (~</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> LCT     rs4988235 European lactase persistence variant, known as -13910 C&gt;T (…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> MC1R    rs1805007 R151C, red hair variant                                     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> MC1R    rs1805008 R160W, red hair variant                                     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SLC24A5 rs1426654 Ala111Thr, light skin pigmentation                          </span></span>
@@ -223,7 +223,7 @@ whose frequencies differ most between populations, using dplyr:</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>difference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">alt_freq</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">alt_freq</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">difference</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
 <span><span class="co">#&gt;   id                difference</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> chr18:1080761:A:G      0.635</span></span>

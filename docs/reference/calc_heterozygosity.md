@@ -60,7 +60,7 @@ raises the values.
 example_lct |>
   filter_snps() |>
   calc_heterozygosity()
-#> # A tibble: 26 x 6
+#> # A tibble: 26 × 6
 #>    pop   super_pop people  snps observed expected
 #>    <chr> <chr>      <int> <int>    <dbl>    <dbl>
 #>  1 ACB   AFR           96   417   0.203    0.200 
@@ -73,5 +73,5 @@ example_lct |>
 #>  8 CLM   AMR           94   417   0.162    0.158 
 #>  9 ESN   AFR           99   417   0.199    0.200 
 #> 10 FIN   EUR           99   417   0.134    0.123 
-#> # i 16 more rows
+#> # ℹ 16 more rows
 ```

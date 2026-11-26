@@ -106,7 +106,7 @@ summary(lct)
 #> Steps:       fetched -> MAF >= 0.05 -> missing <= 0.05 -> LD pruned (r2 <= 0.2) 
 #> 
 #> People per population:
-#> # A tibble: 26 x 4
+#> # A tibble: 26 × 4
 #>    super_pop pop   pop_name                                               people
 #>    <chr>     <chr> <chr>                                                   <int>
 #>  1 AFR       ACB   African Caribbean in Barbados                              96
@@ -125,7 +125,7 @@ summary(lct)
 #> 14 EAS       CHS   Han Chinese South, China                                  105
 #> 15 EAS       JPT   Japanese in Tokyo, Japan                                  104
 #> 16 EAS       KHV   Kinh in Ho Chi Minh City, Vietnam                          99
-#> 17 EUR       CEU   Utah residents with Northern and Western European anc~     99
+#> 17 EUR       CEU   Utah residents with Northern and Western European anc…     99
 #> 18 EUR       FIN   Finnish in Finland                                         99
 #> 19 EUR       GBR   British from England and Scotland                          91
 #> 20 EUR       IBS   Iberian populations in Spain                              107
@@ -137,7 +137,7 @@ summary(lct)
 #> 26 SAS       STU   Sri Lankan Tamil in the UK                                102
 #> 
 #> Processing steps:
-#> # A tibble: 4 x 3
+#> # A tibble: 4 × 3
 #>   step                  people  snps
 #>   <chr>                  <int> <int>
 #> 1 fetched                 2504  1922

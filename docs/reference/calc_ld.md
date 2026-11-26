@@ -67,7 +67,7 @@ example_lct |>
   keep_pops(super_pop = "EUR") |>
   calc_ld()
 #> Dropped 18 SNPs that do not vary among these people.
-#> # A tibble: 14,878 x 7
+#> # A tibble: 14,878 × 7
 #>    snp1               snp2                    pos1      pos2 index1 index2    r2
 #>    <chr>              <chr>                  <int>     <int>  <int>  <int> <dbl>
 #>  1 chr2:135763944:G:A chr2:135764025:G:A 135763944 135764025      1      2 0.120
@@ -80,5 +80,5 @@ example_lct |>
 #>  8 chr2:135764025:G:A chr2:135765213:T:G 135764025 135765213      2      5 0.442
 #>  9 chr2:135765105:C:T chr2:135765213:T:G 135765105 135765213      3      5 0.300
 #> 10 chr2:135765140:A:G chr2:135765213:T:G 135765140 135765213      4      5 0.343
-#> # i 14,868 more rows
+#> # ℹ 14,868 more rows
 ```

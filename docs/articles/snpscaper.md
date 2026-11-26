@@ -267,7 +267,7 @@ summary(lct_subset)
 #> Steps:       fetched -> MAF >= 0.01 -> missing <= 0.05 -> kept YRI, GBR, FIN, CHB, PJL 
 #> 
 #> People per population:
-#> # A tibble: 5 x 4
+#> # A tibble: 5 × 4
 #>   super_pop pop   pop_name                          people
 #>   <chr>     <chr> <chr>                              <int>
 #> 1 AFR       YRI   Yoruba in Ibadan, Nigeria            108
@@ -277,7 +277,7 @@ summary(lct_subset)
 #> 5 SAS       PJL   Punjabi in Lahore, Pakistan           96
 #> 
 #> Processing steps:
-#> # A tibble: 4 x 3
+#> # A tibble: 4 × 3
 #>   step                         people  snps
 #>   <chr>                         <int> <int>
 #> 1 fetched                        2504  1922
@@ -300,7 +300,7 @@ in each population:
 
 freqs <- calc_allele_freqs(lct)
 freqs[freqs$rsid %in% "rs4988235", c("pop", "super_pop", "ref", "alt", "alt_freq")]
-#> # A tibble: 26 x 5
+#> # A tibble: 26 × 5
 #>    pop   super_pop ref   alt   alt_freq
 #>    <chr> <chr>     <chr> <chr>    <dbl>
 #>  1 ACB   AFR       G     A       0.0677
@@ -313,7 +313,7 @@ freqs[freqs$rsid %in% "rs4988235", c("pop", "super_pop", "ref", "alt", "alt_freq
 #>  8 CLM   AMR       G     A       0.309 
 #>  9 ESN   AFR       G     A       0     
 #> 10 FIN   EUR       G     A       0.591 
-#> # i 16 more rows
+#> # ℹ 16 more rows
 ```
 
 ``` r

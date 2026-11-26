@@ -58,7 +58,7 @@ Houston (GIH) and Sri Lankan Tamils in the UK (STU).
 
 ``` r
 samples_1kg
-#> # A tibble: 2,504 x 6
+#> # A tibble: 2,504 × 6
 #>    sample_id pop   super_pop sex    pop_name                      super_pop_name
 #>    <chr>     <chr> <chr>     <chr>  <chr>                         <chr>         
 #>  1 HG01879   ACB   AFR       male   African Caribbean in Barbados African       
@@ -71,7 +71,7 @@ samples_1kg
 #>  8 HG01890   ACB   AFR       male   African Caribbean in Barbados African       
 #>  9 HG01894   ACB   AFR       female African Caribbean in Barbados African       
 #> 10 HG01896   ACB   AFR       female African Caribbean in Barbados African       
-#> # i 2,494 more rows
+#> # ℹ 2,494 more rows
 table(samples_1kg$super_pop)
 #> 
 #> AFR AMR EAS EUR SAS 

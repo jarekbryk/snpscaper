@@ -43,18 +43,18 @@ ancestral or the most common allele. Check the `ref` and `alt` columns.
 ``` r
 freqs <- calc_allele_freqs(example_lct)
 freqs[freqs$rsid %in% "rs4988235", ]
-#> # A tibble: 26 x 10
+#> # A tibble: 26 × 10
 #>    id             rsid  chrom    pos ref   alt   pop   super_pop people alt_freq
 #>    <chr>          <chr> <chr>  <int> <chr> <chr> <chr> <chr>      <int>    <dbl>
-#>  1 chr2:13585107~ rs49~ chr2  1.36e8 G     A     ACB   AFR           96   0.0677
-#>  2 chr2:13585107~ rs49~ chr2  1.36e8 G     A     ASW   AFR           61   0.172 
-#>  3 chr2:13585107~ rs49~ chr2  1.36e8 G     A     BEB   SAS           86   0.0523
-#>  4 chr2:13585107~ rs49~ chr2  1.36e8 G     A     CDX   EAS           93   0     
-#>  5 chr2:13585107~ rs49~ chr2  1.36e8 G     A     CEU   EUR           99   0.737 
-#>  6 chr2:13585107~ rs49~ chr2  1.36e8 G     A     CHB   EAS          103   0     
-#>  7 chr2:13585107~ rs49~ chr2  1.36e8 G     A     CHS   EAS          105   0     
-#>  8 chr2:13585107~ rs49~ chr2  1.36e8 G     A     CLM   AMR           94   0.309 
-#>  9 chr2:13585107~ rs49~ chr2  1.36e8 G     A     ESN   AFR           99   0     
-#> 10 chr2:13585107~ rs49~ chr2  1.36e8 G     A     FIN   EUR           99   0.591 
-#> # i 16 more rows
+#>  1 chr2:13585107… rs49… chr2  1.36e8 G     A     ACB   AFR           96   0.0677
+#>  2 chr2:13585107… rs49… chr2  1.36e8 G     A     ASW   AFR           61   0.172 
+#>  3 chr2:13585107… rs49… chr2  1.36e8 G     A     BEB   SAS           86   0.0523
+#>  4 chr2:13585107… rs49… chr2  1.36e8 G     A     CDX   EAS           93   0     
+#>  5 chr2:13585107… rs49… chr2  1.36e8 G     A     CEU   EUR           99   0.737 
+#>  6 chr2:13585107… rs49… chr2  1.36e8 G     A     CHB   EAS          103   0     
+#>  7 chr2:13585107… rs49… chr2  1.36e8 G     A     CHS   EAS          105   0     
+#>  8 chr2:13585107… rs49… chr2  1.36e8 G     A     CLM   AMR           94   0.309 
+#>  9 chr2:13585107… rs49… chr2  1.36e8 G     A     ESN   AFR           99   0     
+#> 10 chr2:13585107… rs49… chr2  1.36e8 G     A     FIN   EUR           99   0.591 
+#> # ℹ 16 more rows
 ```

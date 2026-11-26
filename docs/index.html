@@ -63,7 +63,7 @@
 </h2>
 <p><strong>snpscaper</strong> is an R package for teaching human population genetics. It lets students and staff explore how genetic variation is distributed within and between human populations, using real genome data from the <a href="https://www.internationalgenome.org" class="external-link">1000 Genomes Project</a>: 2,504 people from 26 populations on five continents.</p>
 <p>You name a gene (for example <code>"LCT"</code>) or a region of the genome, and snpscaper fetches the genotypes directly from the 1000 Genomes server, prepares them, and helps you analyse and plot them. <strong>Everything happens inside R</strong>: there is no need for the command line, for separate bioinformatics programs, or for downloading files by hand.</p>
-<p>The package was designed for final-year undergraduate biology teaching, and its documentation explains the concepts as well as the code.</p>
+<p>The package was designed for final-year undergraduate biology teaching, and its documentation explains the concepts as well as the code. Note that snpscaper does not try to provide an accurate representation of genotypes in selected populations: our filtering of SNPs aims to avoid problems with downstream plots rather than carefully consider MAF or LD levels, for example. The point is to produce visualisations that highlight some opinionated features of human genetic diversity.</p>
 <p>More information is available on the <a href="https://jarekbryk.github.io/snpscaper/">snpscaper website</a> and in the vignettes.</p>
 </div>
 <div class="section level2">
@@ -73,7 +73,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"jarekbryk/snpscaper"</span><span class="op">)</span></span></code></pre></div>
-<p>PCA uses the FactoMineR and factoextra packages, and reports need <a href="https://quarto.org" class="external-link">Quarto</a> (installed with recent versions of RStudio):</p>
+<p>PCA uses the FactoMineR and factoextra packages for PCA plots, and uses <a href="https://quarto.org" class="external-link">Quarto</a> for the HTML reports (installed with recent versions of RStudio):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FactoMineR"</span>, <span class="st">"factoextra"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -142,12 +142,12 @@
 </tr>
 </tbody>
 </table>
-<p>All plots are ggplot2 objects using a consistent theme (<code><a href="reference/theme_jb.html">theme_jb()</a></code>) and fixed, colour-blind-friendly population colours (<code>superpop_colours</code>, <code>pop_colours</code>).</p>
+<p>All plots are ggplot2 objects with fixed, colour-blind-friendly population colours (<code>superpop_colours</code>, <code>pop_colours</code>).</p>
 </div>
 <div class="section level3">
 <h3 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a>
 </h3>
-<p><code><a href="reference/render_report.html">render_report()</a></code> produces a self-contained HTML handout for any gene or region, with all of the analyses above, numbered figures and tables, a methods section, and (in the staff version) notes on the expected patterns.</p>
+<p><code><a href="reference/render_report.html">render_report()</a></code> produces a self-contained HTML handout for any gene or region, with all of the analyses above, numbered figures and tables, a methods section, and some notes on the expected patterns.</p>
 </div>
 </div>
 <div class="section level2">
@@ -182,10 +182,10 @@
 <img src="reference/figures/readme_map.png" alt="Frequency of the SLC24A5 pigmentation variant rs1426654 around the world."><div class="figcaption">Frequency of the SLC24A5 pigmentation variant rs1426654 around the world.</div>
 </div>
 <div class="float">
-<img src="reference/figures/readme_pca.png" alt="PCA of 2,504 people for 300 kb of chromosome 18."><div class="figcaption">PCA of 2,504 people for 300 kb of chromosome 18.</div>
+<img src="reference/figures/readme_pca.png" alt="PCA of 2,504 people for 300 kb of chromosome 18, coloured by superpopulation."><div class="figcaption">PCA of 2,504 people for 300 kb of chromosome 18, coloured by superpopulation.</div>
 </div>
 <div class="float">
-<img src="reference/figures/readme_admixture.png" alt="Admixture analysis of the same region, K = 2 and 3."><div class="figcaption">Admixture analysis of the same region, K = 2 and 3.</div>
+<img src="reference/figures/readme_admixture.png" alt="Admixture analysis of the same region for K = 2 and 3."><div class="figcaption">Admixture analysis of the same region for K = 2 and 3.</div>
 </div>
 <div class="float">
 <img src="reference/figures/readme_ld.png" alt="Linkage disequilibrium around the lactase gene in Europeans, showing the long block left by a selective sweep."><div class="figcaption">Linkage disequilibrium around the lactase gene in Europeans, showing the long block left by a selective sweep.</div>
@@ -194,12 +194,13 @@
 <div class="section level2">
 <h2 id="books-data">📚 Data<a class="anchor" aria-label="anchor" href="#books-data"></a>
 </h2>
-<p>Genotypes: 1000 Genomes Project high-coverage phased panel, GRCh38 (Byrska-Bishop et al. 2022, <em>Cell</em> 185: 3426-3440), from the EBI FTP server. Gene and SNP positions: <a href="https://www.ensembl.org" class="external-link">Ensembl</a>.</p>
+<p>Genotypes: 1000 Genomes Project high-coverage phased panel, GRCh38 (<a href="https://www.sciencedirect.com/science/article/pii/S0092867422009825" class="external-link">Byrska-Bishop et al. 2022, <em>Cell</em> 185: 3426-3440</a>), from the EBI FTP server. Gene and SNP positions: <a href="https://www.ensembl.org" class="external-link">Ensembl</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="muscle-acknowledgements">💪🏽 Acknowledgements<a class="anchor" aria-label="anchor" href="#muscle-acknowledgements"></a>
 </h2>
-<p>Admixture analysis uses the sNMF method of the <a href="https://bioconductor.org/packages/LEA/" class="external-link">LEA</a> package (Frichot et al. 2014). Data are read with <a href="https://bioconductor.org/packages/VariantAnnotation/" class="external-link">VariantAnnotation</a> and <a href="https://bioconductor.org/packages/Rsamtools/" class="external-link">Rsamtools</a>. snpscaper grew out of a student project that explored 1000 Genomes data in R.</p>
+<p>Admixture analysis uses the sNMF method of the <a href="https://bioconductor.org/packages/LEA/" class="external-link">LEA</a> package (<a href="https://academic.oup.com/genetics/article/196/4/973/5935614?login=true" class="external-link">Frichot et al. 2014</a>). Data are read with <a href="https://bioconductor.org/packages/VariantAnnotation/" class="external-link">VariantAnnotation</a> and <a href="https://bioconductor.org/packages/Rsamtools/" class="external-link">Rsamtools</a>.</p>
+<p>snpscaper was first proposed by me (JB) and was subsequently coded as a series of R notebooks by <a href="https://github.com/amarshall1312/" class="external-link">Alex Marshall</a> for his <a href="https://github.com/amarshall1312/PCA-and-Admixture-analysis-of-the-1000-Genomes-Project-using-an-R-based-approach" class="external-link">final year project in 2023</a>. Claude code refactored that code into a proper R package and, crucially, added an R-based way of fetching the data from 1kgp, as the original version relied on browser-based downloading of VCF files.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -230,6 +231,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Jarek Bryk <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-2791-9709" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Alexander Marshall <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>
 
