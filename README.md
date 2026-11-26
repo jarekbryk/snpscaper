@@ -19,7 +19,11 @@ inside R**: there is no need for the command line, for separate
 bioinformatics programs, or for downloading files by hand.
 
 The package was designed for final-year undergraduate biology teaching, and
-its documentation explains the concepts as well as the code.
+its documentation explains the concepts as well as the code. Note that snpscaper 
+does not try to provide an accurate representation of genotypes in selected populations: 
+our filtering of SNPs aims to avoid problems with downstream plots rather than carefully 
+consider MAF or LD levels, for example. The point is to produce visualisations 
+that highlight some opinionated features of human genetic diversity.
 
 More information is available on the
 [snpscaper website](https://jarekbryk.github.io/snpscaper/) and in the
@@ -36,8 +40,8 @@ install.packages("pak")
 pak::pak("jarekbryk/snpscaper")
 ```
 
-PCA uses the FactoMineR and factoextra packages, and reports need
-[Quarto](https://quarto.org) (installed with recent versions of RStudio):
+PCA uses the FactoMineR and factoextra packages for PCA plots, and uses 
+[Quarto](https://quarto.org) for the HTML reports (installed with recent versions of RStudio):
 
 ``` r
 pak::pak(c("FactoMineR", "factoextra"))
@@ -75,15 +79,14 @@ disequilibrium with their neighbours. `keep_pops()` chooses populations.
 | Diversity (heterozygosity) | `calc_heterozygosity()`, `plot_heterozygosity()` |
 | Linkage disequilibrium | `calc_ld()`, `plot_ld()` |
 
-All plots are ggplot2 objects using a consistent theme (`theme_jb()`) and
-fixed, colour-blind-friendly population colours (`superpop_colours`,
+All plots are ggplot2 objects with fixed, colour-blind-friendly population colours (`superpop_colours`,
 `pop_colours`).
 
 ### Reports
 
 `render_report()` produces a self-contained HTML handout for any gene or
 region, with all of the analyses above, numbered figures and tables, a
-methods section, and (in the staff version) notes on the expected
+methods section, and some notes on the expected
 patterns.
 
 ## 👩🏽‍💻️ Example use
@@ -117,23 +120,26 @@ render_report("SLC24A5")
 
 ![Frequency of the SLC24A5 pigmentation variant rs1426654 around the world.](man/figures/readme_map.png)
 
-![PCA of 2,504 people for 300 kb of chromosome 18.](man/figures/readme_pca.png)
+![PCA of 2,504 people for 300 kb of chromosome 18, coloured by superpopulation.](man/figures/readme_pca.png)
 
-![Admixture analysis of the same region, K = 2 and 3.](man/figures/readme_admixture.png)
+![Admixture analysis of the same region for K = 2 and 3.](man/figures/readme_admixture.png)
 
 ![Linkage disequilibrium around the lactase gene in Europeans, showing the long block left by a selective sweep.](man/figures/readme_ld.png)
 
 ## 📚 Data
 
 Genotypes: 1000 Genomes Project high-coverage phased panel, GRCh38
-(Byrska-Bishop et al. 2022, *Cell* 185: 3426-3440), from the EBI FTP
+([Byrska-Bishop et al. 2022, *Cell* 185: 3426-3440](https://www.sciencedirect.com/science/article/pii/S0092867422009825)), from the EBI FTP
 server. Gene and SNP positions: [Ensembl](https://www.ensembl.org).
 
 ## 💪🏽 Acknowledgements
 
 Admixture analysis uses the sNMF method of the
-[LEA](https://bioconductor.org/packages/LEA/) package (Frichot et al.
-2014). Data are read with
+[LEA](https://bioconductor.org/packages/LEA/) package ([Frichot et al.
+2014](https://academic.oup.com/genetics/article/196/4/973/5935614?login=true)). Data are read with
 [VariantAnnotation](https://bioconductor.org/packages/VariantAnnotation/)
-and [Rsamtools](https://bioconductor.org/packages/Rsamtools/). snpscaper
-grew out of a student project that explored 1000 Genomes data in R.
+and [Rsamtools](https://bioconductor.org/packages/Rsamtools/). 
+
+snpscaper was first proposed by me (JB) and was subsequently coded as a series of R notebooks by Alex Marshall for his final year project in 2023.
+Claude code refactored that code into a proper R package and, crucially, added an R-based way of fetching the data from 1kgp, 
+as the original version relied on browser-based downloading of VCF files.

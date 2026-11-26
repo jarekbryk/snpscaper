@@ -6,12 +6,15 @@ Authors@R: c(
     person("Jarek", "Bryk", email = "j.bryk@hud.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2791-9709"))
   )
-Description: A teaching package for exploring variation in human populations
-    entirely within R. It fetches genotypes for any genomic region directly
-    from the 1000 Genomes Project (GRCh38, high-coverage phased panel),
+Description: A teaching package for exploring variation in human populations. 
+    It fetches genotypes for any genomic region directly from the 1000 Genomes Project, 
     prepares them for analysis, and supports principal component analysis,
-    admixture analysis, allele frequencies, Fst, heterozygosity and linkage
-    disequilibrium, with ready-made plots and an HTML handout report.
+    admixture analysis, allele frequencies, Fst, heterozygosity and linkage disequilibrium, 
+    with ready-made plots and an HTML handout report. 
+    The entire workflow is done in R, with no command line or other external dependencies. 
+    This project was first proposed by me and completed by my project student, Alex Marshall, in 2023. 
+    Claude took our messy code, added R-based extraction of genotypes from the 1kgp 
+    and refactored the code into a standalone package.
 License: MIT + file LICENSE
 URL: https://github.com/jarekbryk/snpscaper, https://jarekbryk.github.io/snpscaper/
 BugReports: https://github.com/jarekbryk/snpscaper/issues
