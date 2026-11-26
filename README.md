@@ -140,6 +140,7 @@ Admixture analysis uses the sNMF method of the
 [VariantAnnotation](https://bioconductor.org/packages/VariantAnnotation/)
 and [Rsamtools](https://bioconductor.org/packages/Rsamtools/). 
 
-snpscaper was first proposed by me (JB) and was subsequently coded as a series of R notebooks by Alex Marshall for his final year project in 2023.
+snpscaper was first proposed by me (JB) and was subsequently coded as a series of R notebooks by [Alex Marshall](https://github.com/amarshall1312/) 
+for his [final year project in 2023](https://github.com/amarshall1312/PCA-and-Admixture-analysis-of-the-1000-Genomes-Project-using-an-R-based-approach).
 Claude code refactored that code into a proper R package and, crucially, added an R-based way of fetching the data from 1kgp, 
 as the original version relied on browser-based downloading of VCF files.
